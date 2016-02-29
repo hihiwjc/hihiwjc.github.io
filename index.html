@@ -100,6 +100,65 @@
 
       <div class="body-wrap">
   
+    <article id="android-0x0002Gradle多渠道打包" class="article article-type-android" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/02/29/0x0002Gradle多渠道打包/" class="article-date">
+  	<time datetime="2016-02-29T14:14:04.000Z" itemprop="datePublished">2016-02-29</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/02/29/0x0002Gradle多渠道打包/">0x0001Gradle多渠道打包</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Gradle_u591A_u6E20_u9053_u6253_u5305"><a href="#Gradle_u591A_u6E20_u9053_u6253_u5305" class="headerlink" title="Gradle多渠道打包"></a>Gradle多渠道打包</h1><p>1.渠道：只是为了后期统计时（用户量、安装数量、点击量等）使用，默认不会修改安装包的功能<br>2.Gradle2.4 自动多渠道打包配置<br>channels.properties文件<br><figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line">#默认渠道</span><br><span class="line">channel.<span class="keyword">default</span>=qq</span><br><span class="line">#全部渠道列表</span><br><span class="line">channel.list=baidu,<span class="number">360</span>,hiapk</span><br><span class="line">Gradle2.<span class="number">4</span> 自动多渠道打包配置</span><br><span class="line">build.gradle文件</span><br><span class="line">apply plugin: <span class="string">'com.android.application'</span></span><br><span class="line"><span class="comment">// 加载多渠道配置文件</span></span><br><span class="line">Properties properties = <span class="keyword">new</span> Properties()</span><br><span class="line"><span class="comment">//若此处报channels.properties文件未找到的错误，尝试修改文件路径</span></span><br><span class="line">properties.load(<span class="keyword">project</span>.rootProject.<span class="keyword">file</span>(<span class="string">'app/channels.properties'</span>).newDataInputStream())</span><br><span class="line">String channelDefault = properties.getProperty(<span class="string">'channel.default'</span>)</span><br><span class="line">String channleList = properties.getProperty(<span class="string">'channel.list'</span>)</span><br><span class="line">String[] channelArray = channleList.split(<span class="string">','</span>)</span><br><span class="line">android &#123;</span><br><span class="line">    compileSdkVersion <span class="number">23</span></span><br><span class="line">    buildToolsVersion <span class="string">"23.0.0"</span></span><br><span class="line">    defaultConfig &#123;</span><br><span class="line">        applicationId <span class="string">"com.hihiwjc.learn.popularmovies"</span></span><br><span class="line">        minSdkVersion <span class="number">18</span></span><br><span class="line">        targetSdkVersion <span class="number">23</span></span><br><span class="line">        versionCode <span class="number">1</span></span><br><span class="line">        versionName <span class="string">"1.0"</span></span><br><span class="line">        manifestPlaceholders = [CHANNEL_VALUE: channelDefault]</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    buildTypes &#123;</span><br><span class="line">        release &#123;</span><br><span class="line">            minifyEnabled <span class="keyword">false</span></span><br><span class="line">            <span class="comment">// 开启多dex（解除65535的限制）</span></span><br><span class="line">            multiDexEnabled <span class="keyword">true</span></span><br><span class="line">           proguardFiles getDefaultProguardFile(<span class="string">'proguard-android.txt'</span>), <span class="string">'proguard-rules.pro'</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="comment">//这里是为了防止产生证书文件重复的问题</span></span><br><span class="line">    packagingOptions &#123;</span><br><span class="line">        <span class="keyword">exclude</span> <span class="string">'META-INF/DEPENDENCIES.txt'</span></span><br><span class="line">        <span class="keyword">exclude</span> <span class="string">'META-INF/LICENSE.txt'</span></span><br><span class="line">        <span class="keyword">exclude</span> <span class="string">'META-INF/NOTICE.txt'</span></span><br><span class="line">        <span class="keyword">exclude</span> <span class="string">'META-INF/NOTICE'</span></span><br><span class="line">        <span class="keyword">exclude</span> <span class="string">'META-INF/LICENSE'</span></span><br><span class="line">        <span class="keyword">exclude</span> <span class="string">'META-INF/DEPENDENCIES'</span></span><br><span class="line">        <span class="keyword">exclude</span> <span class="string">'META-INF/notice.txt'</span></span><br><span class="line">        <span class="keyword">exclude</span> <span class="string">'META-INF/license.txt'</span></span><br><span class="line">        <span class="keyword">exclude</span> <span class="string">'META-INF/dependencies.txt'</span></span><br><span class="line">        <span class="keyword">exclude</span> <span class="string">'META-INF/LGPL2.1'</span></span><br><span class="line">    &#125;</span><br><span class="line">    productFlavors &#123;</span><br><span class="line">        <span class="comment">//产品渠道，遍历配置</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; channelArray.<span class="keyword">size</span>(); i++) &#123;</span><br><span class="line">            <span class="keyword">def</span> channel = channelArray[i]</span><br><span class="line">            <span class="string">"$&#123;channel&#125;"</span> &#123;</span><br><span class="line">                manifestPlaceholders = [CHANNEL_VALUE: channel]</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//依赖库</span></span><br><span class="line"><span class="keyword">dependencies</span> &#123;</span><br><span class="line">    <span class="keyword">compile</span> <span class="keyword">fileTree</span>(<span class="keyword">include</span>: [<span class="string">'*.jar'</span>], dir: <span class="string">'libs'</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/android-gradle/">android gradle</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/android/">android</a>
+	</div>
+
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+  
     <article id="post-Bug0x0001_Didn&#39;t find class“”on path DexPathList" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
@@ -140,7 +199,7 @@
 
       
 	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/android/">android</a>
+	<a class="article-category-link" href="/categories/bugs/">bugs</a>
 	</div>
 
 
