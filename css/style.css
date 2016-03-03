@@ -622,7 +622,7 @@ a {
   -webkit-border-radius: 300px;
   border-radius: 300px;
   opacity: 0;
-  -webkit-transition: all 0.2s ease-in;
+  -webkit-transition: all 0.5s ease-in;
 }
 #header .profilepic img.show {
   width: 100%;
